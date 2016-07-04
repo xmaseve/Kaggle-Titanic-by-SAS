@@ -20,18 +20,17 @@ proc freq data=kaggle.train;
 table sex cabin embarked pclass;
 run;
 
-proc sgplot data=kaggle.train;
-vbar sex / group=survived;
-run;
+%let var = sex;
+%let var = pclass;
 
 proc sgplot data=kaggle.train;
-vbar pclass / group=survived;
+vbar &var / group=survived;
 run;
 
 proc format;
 value age low - < 20 = 'young'
           20 - < 50 = 'adult'
-		  50 -  high = 'old';
+          50 -  high = 'old';
 run;
 
 proc freq data=kaggle.train;
