@@ -27,6 +27,17 @@ proc sgplot data=kaggle.train;
 vbar &var / group=survived;
 run;
 
+/*antoher way to use sas macro*/
+
+%macro plot(var=);
+proc sgplot data=kaggle.train;
+vbar &var / group=survived;
+run;
+%mend plot;
+
+%plot(var=sex)
+%plot(var=pclass)
+
 proc format;
 value age low - < 20 = 'young'
           20 - < 50 = 'adult'
