@@ -66,20 +66,45 @@ proc means data=kaggle.train;
 class sex;
 run;
 
-data new (drop=sex embarked);
+ata new;
 set kaggle.train;
 if age = . and sex = 'male' then age = 31;
 if age = . and sex = 'female' then age = 28;
-if sex = 'male' then gender = 0;
-else gender = 1;
-if embarked = 'Q' then embark = 0;
-else if embarked = 'S' then embark = 1;
-else embark = 2;
+format survived yesno.;
 run;
 
-proc print data=new (obs=20); run;
+proc print data=new (obs=20); 
+run;
 
 proc logistic data=new;
-model survived = gender age pclass;
+	class sex (param=ref ref='female');
+	model survived (event='Yes')= sex / clodds=pl;
 run;
+
+proc logistic data=new;
+	class sex (param=ref ref='female');
+	model survived (event='Yes')= sex age/ clodds=pl;
+run;
+
+proc logistic data=new;
+	class sex (param=ref ref='female')
+		  age;
+	model survived (event='Yes')= sex age/ clodds=pl;
+	format age age.;
+run;
+
+proc logistic data=new;
+	class sex (param=ref ref='female')
+		  age
+          pclass (param=ref ref='1');
+	model survived (event='Yes')= sex age pclass/ clodds=pl;
+	format age age.;
+run;
+
+proc logistic data=new plot(only)=(roc oddsratio);
+	class sex (param=ref ref='female')
+          pclass (param=ref ref='1');
+	model survived (event='Yes')= sex | age | pclass @2/ selection=backward clodds=pl;
+run;
+
 
