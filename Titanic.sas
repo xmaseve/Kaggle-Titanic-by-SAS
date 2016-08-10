@@ -66,7 +66,7 @@ proc means data=kaggle.train;
 class sex;
 run;
 
-ata new;
+data new;
 set kaggle.train;
 if age = . and sex = 'male' then age = 31;
 if age = . and sex = 'female' then age = 28;
